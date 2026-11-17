@@ -1,530 +1,122 @@
-# Bug Reports — Embedded QA Portfolio
+# Master Test Plan — ESP32 Firmware Quality
 
-This document contains a summary of identified defects across testing cycles, along with detailed reports for critical issues.
+## 1. Document Purpose
 
-## 1. Smart Gate Project
+This Master Test Plan establishes the formal quality assurance, verification, and risk-based validation strategy for the ESP32 DevKit v1 IoT controller firmware. It supports the formal release decision by validating 7 core functional modules (Smart Gate controller, debouncing, UART CLI, I2C MPU6050 sensor, system recovery/WDT, Python automation, and IoT networking) under simulated fault and stress conditions without initial source code access (black-box approach).
 
-### Environment
+## 2. System Overview
 
-* **MCU:** ESP32 DevKit v1
-* **Platform:** Wokwi Simulator
+- **Hardware:** ESP32 DevKit v1, DHT22 sensor, MPU6050 sensor (0x68), peripheral relays, LEDs, push buttons, limit switches.
+- **Firmware:** Custom C/C++ ESP32 firmware (`homework_buggy`), including CLI parser, finite state machines, Watchdog (WDT), offline queuing buffers, and NVS persistence.
+- **Interfaces:** UART Serial CLI (115200 baud), I2C (GPIO21 / GPIO22), GPIO lines, Wi-Fi / MQTT networking stack.
+- **External Dependencies:** Wokwi Simulator, MQTT Broker, Python 3.14 PyTest framework, PulseView logic analyzer.
+- **Critical Data / Actuators:** Relay state, PWM levels, system configuration parameters (`speed`, `timeout`), unique message counters, free heap memory.
 
-### Summary Bug Log
+## 3. Quality Objectives
 
-| Bug ID    | Title                                                                            | Requirement | Severity     | Reproducibility | Evidence                                                                   |
-| --------- | -------------------------------------------------------------------------------- | ----------- | ------------ | --------------- | -------------------------------------------------------------------------- |
-| **BUG01** | Open LED remains ON after STOP button is pressed                                 | R14         | Medium       | 5/5             | [smart_gate_project_bug_01.png](../evidence/smart_gate_project_bug_01.png) |
-| **BUG02** | System does not transition to ERROR state after 10-second timeout during OPENING | R9          | High         | 5/5             | N/A                                                                        |
-| **BUG03** | Direct reversal between OPENING and CLOSING states allowed without STOP          | N/A         | **Critical** | 5/5             | [smart_gate_project_bug_03.png](../evidence/smart_gate_project_bug_03.png) |
+- Ensure strict functional compliance with state transition requirements and boundary limits.
+- Guarantee memory safety, preventing buffer overflows and handling long-run heap degradation.
+- Validate robust error recovery upon protocol communication faults (I2C NACK) and system hangs (WDT).
+- Verify reliable offline message buffering (`DROP_OLDEST` policy) and network auto-reconnection behavior.
 
-### Detailed Bug Report (Critical)
+## 4. Scope
 
-#### BUG03: Direct reversal between OPENING and CLOSING states allowed without STOP
+Black-box functional, boundary, fault-injection, and stress testing across all 7 embedded modules, supported by automated PyTest regression scripts and logic analyzer trace evidence.
 
-* **Bug ID:** BUG03
-* **Title:** Direct reversal between OPENING and CLOSING states allowed without STOP
-* **Severity:** **Critical** 🔴
-* **Reproducibility:** 5/5 (100%)
+## 5. Out of Scope
 
-#### Preconditions
+- Physical electrical power consumption spikes, RF interference, and deep-sleep current draw measurements on real hardware.
+- Security penetration testing, OTA firmware updates, and SPI bus protocol verification.
 
-1. The Smart Gate system is powered ON.
+## 6. Assumptions / Constraints
 
-#### Steps to Reproduce
+- Testing is primarily conducted within the Wokwi Simulator environment and via virtual serial bridges (`rfc2217://localhost:4000`).
+- Simulation timing may not reflect exact real-world network propagation delays or physical button debounce physics.
+- The firmware builds evaluated are intentionally buggy (`BUGGY`) to simulate real-world defect injection.
 
-1. Initiate opening sequence by triggering command `O` (State transitions: `CLOSED` -> `OPENING`).
-2. While state is `OPENING`, immediately trigger opposing command `C` (Close).
-3. Observe terminal output and relay behavior.
-4. While state is `CLOSING`, immediately trigger opposing command `O` (Open).
+## 7. Quality Risks
 
-#### Expected Result
+| Risk ID | Risk                                                             | Impact | Probability | Priority     | Mitigation / Test                                   |
+| ------- | ---------------------------------------------------------------- | ------ | ----------- | ------------ | --------------------------------------------------- |
+| **R01** | Uncontrolled motor state transitions & direct reversal           | High   | High        | **Critical** | Functional state transition test (Smart Gate)       |
+| **R02** | Noise pulse creates duplicate actions during critical operations | High   | High        | **Critical** | Debounce pulse injection test                       |
+| **R03** | UART input buffer overflow on long strings causing reboots       | High   | High        | **Critical** | CLI boundary and buffer overflow testing            |
+| **R04** | I2C bus lock upon NACK without automatic recovery                | High   | High        | **Critical** | I2C fault injection & PulseView trace analysis      |
+| **R05** | Unsafe actuator states (relay/PWM) retained after WDT/reset      | High   | High        | **Critical** | Watchdog trigger and post-reset state verification  |
+| **R06** | Network reconnection storm bypassing exponential backoff         | Medium | High        | **High**     | Network down/up retry timing observation            |
+| **R07** | Offline buffer capacity bypass & silent data duplication/loss    | High   | High        | **Critical** | Buffer capacity overflow & reconnection flush tests |
+| **R08** | Progressive heap degradation (memory leak) during stress         | High   | High        | **Critical** | Repeated stress cycles with heap tracking           |
 
-* Direct state reversal between `OPENING` and `CLOSING` must be rejected or routed through a mandatory `STOP` phase.
-* The system should ignore opposite directional commands during active movement to prevent mechanical and electric driver damage.
+## 8. Test Levels
 
-#### Actual Result
+- **Component / Firmware Function:** Individual command parsers, sensor readouts, and boundary values.
+- **Interface / Protocol:** UART CLI input validation, I2C transaction framing and NACK handling.
+- **System:** Smart Gate state machine sequences, button debouncing, and status reporting.
+- **Recovery / Fault Injection:** Watchdog (WDT) triggers, deep sleep, and power-loss save interruptions.
+- **Network:** MQTT connection drops, offline buffering, and stress message bursts.
+- **Regression:** Automated PyTest execution suite over virtual serial ports.
 
-* The firmware immediately switches states back and forth without executing a stop sequence:
-  * Log output: `STATE: OPENING -> CLOSING` on command `C`
-  * Log output: `STATE: CLOSING -> OPENING` on command `O`
+## 9. Test Types
 
-#### Evidence
+| Type                    | Example from the practices                                                                                                                                                                            |
+|:----------------------- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Functional**          | Valid CLI commands (`help`, `status`), Smart Gate state transitions (`OPEN`, `CLOSE`, `STOP`, limit switches), LED toggling (`SET LED ON/OFF`)                                                        |
+| **Boundary / negative** | `speed` `0..255` (invalid `-1`, `256`), `timeout` `1..60` (invalid `0`, `61`), input length `41` vs overflow (`>41` chars), PWM `0..100` (invalid `-1`, `101`, `999`), special characters (`%:?)(\*`) |
+| **Protocol**            | I2C ACK/NACK (`0x68` vs `0x69` fault), JSON payload structure validation (`GET TEMP` truncation)                                                                                                      |
+| **Reliability**         | Button debounce under short noise pulses and noise during critical operations (`RAW` vs `Logical` events), `PING` response time (`<= 1.0s`)                                                           |
+| **Recovery**            | Watchdog reset after `hang` (`int_wdt`), deep sleep wake-up (`sleep N`), I2C `FAULT ON -> OFF` recovery, network reconnect (`NET DOWN -> NET UP`)                                                     |
+| **Persistence**         | `save` -> `sleep` -> `status` (pre-sleep values check); `powerloss` during `save` (counter corruption check)                                                                                          |
+| **Network stress**      | `SEND` burst exceeding buffer capacity (`10` messages vs capacity `8`, `DROP_OLDEST` policy), message deduplication on flush, `STRESS 100`                                                            |
+| **Memory stability**    | Heap tracking across `STRESS 100` ×5 iterations (`350868` -> `310600` bytes, ~8 KB leak per iteration)                                                                                                |
+| **Automation**          | 8 PyTest automated tests (`test_boundaries`, `test_relay`, `test_sensor`, `test_status`, `test_timeout`): 2 passed, 6 failed                                                                          |
 
-[smart_gate_project_bug_03.png](../evidence/smart_gate_project_bug_03.png)
+## 10. Test Environment
 
----
+| Environment         | Purpose                                           | Tools                                              |
+| ------------------- | ------------------------------------------------- | -------------------------------------------------- |
+| **Wokwi**           | Firmware and system simulation                    | ESP32 simulator, virtual serial bridge (`rfc2217`) |
+| **Logic analysis**  | Protocol evidence & transaction verification      | PulseView / logic analyzer (`.vcd` capture)        |
+| **Host automation** | Automated regression test execution               | Python 3.14 / PyTest                               |
+| **Real hardware**   | Electrical and physical validation (future phase) | Haven't used physical devices so far               |
 
-## 2. Debounce Project
+## 11. Entry Criteria
 
-### Environment
+- Simulation environment (`Wokwi`) successfully initialized and running the target firmware build.
+- Requirements and expected behaviour are documented
+- Critical interfaces are observable: UART/CLI, I2C, network states, logs.
 
-* **MCU:** ESP32 DevKit v1
-* **Platform:** Wokwi simulator
+## 12. Exit Criteria
 
-### Summary Bug Log
+- 100% execution of planned test scenarios across all 7 project modules.
+- All critical and high-priority risks covered by verifiable evidence.
+- Defect reports logged with exact reproduction steps, logs, and evidence links.
 
-| Bug ID     | Title                                                                        | Requirement | Severity     | Reproducibility | Evidence                                               |
-| ---------- | ---------------------------------------------------------------------------- | ----------- | ------------ | --------------- | ------------------------------------------------------ |
-| **BUG_01** | Short noise pulse triggers false logical event and action                    | R1          | High         | 5/5             | [debounce_bug_01.png](../evidence/debounce_bug_01.png) |
-| **BUG_02** | Noise during critical operation causes many false logical events and actions | R1          | **Critical** | 5/5             | [debounce_bug_02.jpg](../evidence/debounce_bug_02.jpg) |
+## 13. Regression Strategy
 
-### Detailed Bug Report (Critical)
+- Run the core PyTest automated test suite (`pytest pytest/tests/ -v`) after any firmware change.
+- Perform smoke tests verifying boot sequence, `help`, `status`, sensor readout, BVA and network connection status.
 
-#### BUG_02: Noise during critical operation causes many false logical events and actions
+## 14. Evidence Strategy
 
-* **Bug ID:** BUG_02
-* **Title:** Noise during critical operation causes many false logical events and actions
-* **Severity:** **Critical** 🔴
-* **Requirement:** R1
-* **Reproducibility:** 5/5
+- **Logs:** Terminal execution logs and error outputs ([bug-reports](https://github.com/ramenw420/embedded-qa-portfolio/blob/main/bug-reports/bug_reports.md)), [network-stress](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress)).
+- **Traces:** Logic analyzer captures and protocol dumps ([PulseView i2c_trace.vcd](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress)).
+- **Screenshots:** Visual proof of state failures and simulation states ([evidence](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence)).
+- **Reports:** Detailed execution matrices and bug logs ([Test Reports](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/test-reports), [Bug Reports](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports)).
 
-#### Preconditions
+## 15. Defect Management
 
-1. Simulation is up, system is IDLING
+- **Severity:** Classified into Critical, High, Medium, and Low based on system stability and data integrity impact.
+- **Reproducibility:** Tested across multiple iterations (e.g., 5/5 or 10/10 consistency).
+- **Evidence:** Must include matching log output, trace file, or screenshot reference.
+- **Retest:** Mandatory verification cycle following developer fixes.
 
-#### Steps to Reproduce
+## 16. Residual Risks
 
-1. Click green button once (to generate an operation)
-2. While critical operation is running hold red button to generate noise
-3. Wait until operation is finished and observe terminal logs
+- Wokwi simulation does not capture real physical contact bounce characteristics, RF noise, or hardware power supply fluctuations.
+- Long-term memory exhaustion thresholds are extrapolated from simulation stress cycles and require physical soak testing.
 
-#### Expected Result
+## 17. Release Recommendation
 
-System should generate one logical event and action as green button was pressed once
+### **NO-GO (Not Recommended for Release)**
 
-#### Actual Result
-
-Noise during critical operation causes many false logical events and actions
-
-#### Evidence
-
-[debounce_bug_02.jpg](../evidence/debounce_bug_02.jpg)
-
----
-
-## 3. UART CLI Project
-
-### Environment
-
-* **MCU:** ESP32 DevKit v1
-* **Interface:** UART Serial CLI
-* **Platform:** Wokwi simulator
-
-### Summary Bug Log
-
-| Bug ID     | Title                                                                                                           | Requirement | Severity     | Reproducibility | Evidence                                               |
-| ---------- | --------------------------------------------------------------------------------------------------------------- | ----------- | ------------ | --------------- | ------------------------------------------------------ |
-| **BUG-01** | No error displayed when speed limit is exceeded                                                                 | R3          | Mid          | 10/10           | [uart_cli_bug_01.png](../evidence/uart_cli_bug_01.png) |
-| **BUG-02** | No error displayed when timeout limit is exceeded                                                               | R5          | Medium       | 10/10           | [uart_cli_bug_02.png](../evidence/uart_cli_bug_02.png) |
-| **BUG-03** | Special characters are accepted with OK instead of unknown command error                                        | R7          | Low          | 10/10           | [uart_cli_bug_03.png](../evidence/uart_cli_bug_03.png) |
-| **BUG-04** | System executes command exceeding max length when padded with trailing spaces instead of returning length error | R10         | Low          | 10/10           | [uart_cli_bug_04.png](../evidence/uart_cli_bug_04.png) |
-| **BUG-05** | System is crashing with fault on buffer overflow when processing long input strings                             | R11         | **Critical** | 10/10           | N/A                                                    |
-
-### Detailed Bug Report (Critical)
-
-#### BUG-05: System is crashing with fault on buffer overflow when processing long input strings
-
-* **Bug ID:** BUG-05
-* **Title:** System is crashing with fault on buffer overflow when processing long input strings
-* **Severity:** **Critical** 🔴
-* **Requirement:** R11
-* **Reproducibility:** 10/10
-
-#### Preconditions
-
-1. Simulation is running.
-
-#### Steps to Reproduce
-
-1. Run simulation
-2. Enter a long string exceeding the buffer limit like: `helpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`
-3. Observe logs
-
-#### Expected Result
-
-`ERROR: command too long` and remains stable without rebooting
-
-#### Actual Result
-
-System is rebooting
-
-#### Evidence
-
-N/A
-
----
-
-## 4. I2C Protocol Project
-
-### Environment
-
-* **MCU:** ESP32 DevKit
-* **Peripheral:** MPU6050 / 0x68
-* **SDA/SCL:** GPIO21 / GPIO22
-* **Capture:** i2c_trace.vcd
-* **Build:** BUGGY
-
-### Summary Bug Log
-
-| Bug ID     | Title                                  | Requirement | Severity    | Reproducibility | Evidence                                                                                                                       |
-| ---------- | -------------------------------------- | ----------- | ----------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **BUG-01** | Firmware freezes upon NACK, no retry   | N/A         | **Highest** | 10/10           | [i2c_bug.png](../evidence/i2c_bug.png), [i2c_trace.vcd](../evidence/i2c_trace.vcd), [i2c_bug_2.png](../evidence/i2c_bug_2.png) |
-| **BUG-02** | Firmware won’t recover after FAULT OFF | N/A         | **Highest** | 10/10           | [i2c_bug.png](../evidence/i2c_bug.png), [i2c_trace.vcd](../evidence/i2c_trace.vcd), [i2c_bug_2.png](../evidence/i2c_bug_2.png) |
-
-### Detailed Bug Reports (Critical)
-
-#### BUG-01: Firmware freezes upon NACK, no retry
-
-* **Bug ID:** BUG-01
-* **Title:** Firmware freezes upon NACK, no retry
-* **Severity:** **Highest** 🔴
-* **Reproducibility:** 10/10
-
-#### Preconditions
-
-System simulation is running
-
-#### Steps to Reproduce
-
-1. While simulation is running switch FAULT ON
-2. Observe logs in terminal and data bus in pulse view
-
-#### Expected Result
-
-System should retry to connect, main loop should stay alive
-
-#### Actual Result
-
-System froze with `[  5519][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1`, System’s main loop is no longer alive, retry isn’t happening
-
-#### Evidence
-
-* **Trace Evidence:** [i2c_bug.png](../evidence/i2c_bug.png), [i2c_trace.vcd](../evidence/i2c_trace.vcd)
-* **Firmware Log Evidence:** [i2c_bug_2.png](../evidence/i2c_bug_2.png)
-
-#### BUG-02: Firmware won’t recover after FAULT OFF
-
-* **Bug ID:** BUG-02
-* **Title:** Firmware won’t recover after FAULT OFF
-* **Severity:** **Highest** 🔴
-* **Reproducibility:** 10/10
-
-#### Preconditions
-
-System simulation is running
-
-#### Steps to Reproduce
-
-1. While simulation is running switch FAULT ON
-2. Wait a few seconds
-3. Switch FAULT OFF
-4. Observe logs in terminal and data bus in pulse view
-
-#### Expected Result
-
-System should continue working after FAULT is back OFF
-
-#### Actual Result
-
-System provides no recovery path after FAULT ON followed by FAULT OFF
-
-#### Evidence
-
-* **Trace Evidence:** [i2c_bug.png](../evidence/i2c_bug.png), [i2c_trace.vcd](../evidence/i2c_trace.vcd)
-* **Firmware Log Evidence:** [i2c_bug_2.png](../evidence/i2c_bug_2.png)
-
----
-
-## 5. System Recovery & Watchdog Project
-
-### Environment
-
-* **MCU:** ESP32 DevKit V1
-* **Sensor:** DHT22 GPIO15
-* **Button:** GPIO4
-* **LED:** GPIO2
-* **Relay:** GPIO5
-* **Serial:** 115200
-* **Build:** BUGGY
-
-### Summary Bug Log
-
-| Bug ID     | Title                                                          | Requirement           | Severity     | Reproducibility | Evidence                                                       |
-| ---------- | -------------------------------------------------------------- | --------------------- | ------------ | --------------- | -------------------------------------------------------------- |
-| **Bug-01** | Single button press triggers multiple actions                  | Button R3             | Medium       | 3/5             | [recovery_bug_01.mp4](../evidence/recovery_bug_01.mp4)         |
-| **Bug-02** | Actuator remains ON after WDT reboot                           | R5 watchdog           | **Critical** | 10/10           | [recovery_bug_02.mp4](../evidence/recovery_bug_02.mp4)         |
-| **bug-03** | Device wakes up instantly from deep sleep ignoring sleep timer | R4 — Sleep / Wake     | High         | 10/10           | [recovery_bug_03.mp4](../evidence/recovery_bug_03.mp4)         |
-| **bug-04** | Incorrect counter displayed during powerloss                   | R6 — Interrupted save | High         | 10/10           | [recovery_bug_04.mp4.png](../evidence/recovery_bug_04.mp4.png) |
-
-### Detailed Bug Report (Critical)
-
-#### Bug-02: Actuator remains ON after WDT reboot
-
-* **Bug ID:** Bug-02
-* **Title:** Actuator remains ON after WDT reboot
-* **Severity:** **Critical** 🔴
-* **Requirement:** R5 watchdog
-* **Risk:** Led remains in wrong/unexpected state after WDT reboot
-* **Reproducibility:** 10/10
-* **Timing / Reset Reason:** int_wdt
-
-#### Preconditions
-
-Device is in active state
-
-#### Steps to Reproduce
-
-1. Turn Actuator ON
-2. Execute hang
-3. Execute status after reboot
-4. Observe Actuator state
-
-#### Expected Result
-
-Actuator resets to OFF after WDT reboot
-
-#### Actual Result
-
-Actuator remains ON after WDT reboot
-
-#### Evidence
-
-[recovery_bug_02.mp4](../evidence/recovery_bug_02.mp4)
-
----
-
-## 6. Python Automation Project
-
-### Environment
-
-* **MCU:** ESP32 DevKit v1
-* **Platform:** Wokwi Simulator (`rfc2217://localhost:4000`)
-* **Framework:** Pytest, Python 3.14
-
-### Summary Bug Log
-
-| Bug ID     | Title                                                                                 | Category                 | Severity     | Reproducibility | Evidence                                           |
-| ---------- | ------------------------------------------------------------------------------------- | ------------------------ | ------------ | --------------- | -------------------------------------------------- |
-| **BUG-01** | PWM upper boundary value `100` rejected with `ERROR` instead of `OK`                  | Firmware / Requirement   | Medium       | 5/5             | [python_bug_01.png](../evidence/python_bug_01.png) |
-| **BUG-02** | State leakage on `RESET`: PWM remains at `255` instead of resetting to safe state `0` | Firmware Defect          | **Critical** | 5/5             | [python_bug_02.png](../evidence/python_bug_02.png) |
-| **BUG-03** | Temperature response JSON truncated mid-stream causing `JSONDecodeError`              | Communication / Firmware | **Critical** | 5/5             | [python_bug_03.png](../evidence/python_bug_03.png) |
-| **BUG-04** | Device fails to respond to `PING` command causing `TimeoutError`                      | Requirement / Firmware   | Medium       | 5/5             | [python_bug_04.png](../evidence/python_bug_04.png) |
-
-### Detailed Bug Reports (Critical)
-
-#### BUG-02: State leakage on `RESET`: PWM remains at `255` instead of resetting to safe state `0`
-
-* **Bug ID:** BUG-02
-* **Title:** State leakage on `RESET`: PWM remains at `255` instead of resetting to safe state `0`
-* **Category:** Firmware Defect
-* **Severity:** **Critical** 🔴
-* **Test File:** `automation/tests/test_relay.py` (`test_reset_restores_safe_state`)
-* **Reproducibility:** 5/5
-
-#### Preconditions
-
-1. Simulation is running and serial connection via `rfc2217://localhost:4000` is established.
-
-#### Steps to Reproduce
-
-1. Turn the LED on by sending command `SET LED ON`.
-2. Send command `RESET`.
-3. Query the device status via command `STATUS`.
-4. Check the `pwm` field value in the JSON response.
-
-#### Expected Result
-
-Command `RESET` restores all peripherals to a safe default state where `pwm == 0`.
-
-#### Actual Result
-
-The PWM subsystem retains an active value of `255` (`AssertionError: assert 255 == 0`).
-
-#### Evidence
-
-[python_bug_02.png](../evidence/python_bug_02.png)
-
-#### BUG-03: Temperature response JSON truncated mid-stream causing `JSONDecodeError`
-
-* **Bug ID:** BUG-03
-* **Title:** Temperature response JSON truncated mid-stream causing `JSONDecodeError`
-* **Category:** Communication / Firmware Defect
-* **Severity:** **Critical** 🔴
-* **Test File:** `automation/tests/test_sensor.py` (`test_temperature_is_valid_json`)
-* **Reproducibility:** 5/5
-
-#### Preconditions
-
-1. Simulation is running and serial connection via `rfc2217://localhost:4000` is established.
-
-#### Steps to Reproduce
-
-1. Send command `GET TEMP` to the device.
-2. Read the raw serial line response (`ser.readline()`).
-3. Attempt to parse the received payload using `json.loads()`.
-
-#### Expected Result
-
-Device transmits a complete, valid JSON object (e.g., `{"status":"OK","temperature":24.5}`).
-
-#### Actual Result
-
-The string is cut off before the closing brace (`'{"status":"OK","temperature":24.5'`), raising `JSONDecodeError`.
-
-#### Evidence
-
-[python_bug_03.png](../evidence/python_bug_03.png)
-
----
-
-## 7. IoT Networking Project
-
-### Environment
-
-* **MCU:** ESP32 DevKit v1
-* **Platform:** Wokwi Simulator / IoT Network Module
-
-### Summary Bug Log
-
-| Bug ID | Title                                                                          | Requirement | Severity | Reproducibility | Evidence                                                                   |
-| ------ | ------------------------------------------------------------------------------ | ----------- | -------- | --------------- | -------------------------------------------------------------------------- |
-| **01** | Reconnect Storm & Immediate Retry Burst Failure                                | R2          | Critical | 5/5             | [iot_network_log_bug_01.txt](../network-stress/iot_network_log_bug_01.txt) |
-| **02** | Offline Buffer Capacity Boundary Bypass & Element Drop Failure                 | R4          | Critical | 5/5             | [iot_network_log_bug_02.txt](../network-stress/iot_network_log_bug_02.txt) |
-| **03** | Message Duplication During Buffer Flush Upon Network Reconnection              | R6          | High     | 5/5             | [iot_network_log_bug_03.txt](../network-stress/iot_network_log_bug_03.txt) |
-| **04** | Dynamic Memory Leak and Heap Degradation Under Stress During Connection Outage | R7          | High     | 5/5             | [iot_network_log_bug_04.txt](../network-stress/iot_network_log_bug_04.txt) |
-
-### Detailed Bug Reports (Critical & High)
-
-#### 01: Reconnect Storm & Immediate Retry Burst Failure
-
-* **Bug ID:** 01
-* **Title:** Reconnect Storm & Immediate Retry Burst Failure
-* **Severity:** **Critical** 🔴
-* **Requirement:** R2
-* **Reproducibility:** 5/5
-
-#### Preconditions
-
-1. System is up and running in CONNECTED state.
-
-#### Steps to Reproduce
-
-1. Execute `NET DOWN` command to simulate connection loss.
-2. Observe logs for backoff and retry behavior.
-
-#### Expected Result
-
-System should use an exponential backoff algorithm to prevent broker flooding.
-
-#### Actual Result
-
-`reconnect_attempts` happen rapidly with `backoff_ms=50`.
-
-#### Evidence
-
-[iot_network_log_bug_01.txt](../network-stress/iot_network_log_bug_01.txt)
-
----
-
-#### 02: Offline Buffer Capacity Boundary Bypass & Element Drop Failure
-
-* **Bug ID:** 02
-* **Title:** Offline Buffer Capacity Boundary Bypass & Element Drop Failure
-* **Severity:** **Critical** 🔴
-* **Requirement:** R4
-* **Reproducibility:** 5/5
-
-#### Preconditions
-
-1. System is up and running in CONNECTED state.
-
-#### Steps to Reproduce
-
-1. Execute `NET DOWN` command to simulate connection loss.
-2. Execute `SEND` more times than defined buffer capacity (10 or more times).
-3. Execute `BUFFER` and `STATUS` during outage to check messages and dropped count.
-
-#### Expected Result
-
-Upon receiving the 9th and subsequent payloads, the `DROP_OLDEST` policy deletes the oldest items, setting `dropped: 2` while maintaining `buffer: 8`.
-
-#### Actual Result
-
-Buffer count exceeds max capacity (`buffer: 10`, `capacity: 8`) while dropped remains `0`.
-
-#### Evidence
-
-[iot_network_log_bug_02.txt](../network-stress/iot_network_log_bug_02.txt)
-
----
-
-#### 03: Message Duplication During Buffer Flush Upon Network Reconnection
-
-* **Bug ID:** 03
-* **Title:** Message Duplication During Buffer Flush Upon Network Reconnection
-* **Severity:** **High** 🟠
-* **Requirement:** R6
-* **Reproducibility:** 5/5
-
-#### Preconditions
-
-1. System has messages in offline buffer.
-
-#### Steps to Reproduce
-
-1. Re-establish connection using `NET UP`.
-2. Observe logs during `buffer_flush`.
-
-#### Expected Result
-
-Each buffered message is published to the broker exactly once.
-
-#### Actual Result
-
-Each message ID is published twice (duplicated IDs: `id-1`, `id-2`, `id-3`, `id-4`, `id-5`, `id-6`), and duplicate counters double the actual message count.
-
-#### Evidence
-
-[iot_network_log_bug_03.txt](../network-stress/iot_network_log_bug_03.txt)
-
----
-
-#### 04: Dynamic Memory Leak and Heap Degradation Under Stress During Connection Outage
-
-* **Bug ID:** 04
-* **Title:** Dynamic Memory Leak and Heap Degradation Under Stress During Connection Outage
-* **Severity:** **High** 🟠
-* **Requirement:** R7
-* **Reproducibility:** 5/5
-
-#### Preconditions
-
-1. Device is running, state is CONNECTED, the broker is active, initial heap is recorded.
-
-#### Steps to Reproduce
-
-1. Execute `NET DOWN` followed by `STRESS 100` to simulate message burst during outage.
-2. Execute `STATUS` and check heap state during connection outage.
-3. Execute `NET UP` and wait until the buffer flush completes.
-4. Execute `STATUS` and check heap state after `NET UP`.
-5. Repeat the steps a few times and check/log heap every time.
-
-#### Expected Result
-
-Heap remains stable after buffer flushes, no memory drops are observed.
-
-#### Actual Result
-
-Free heap drops irreversibly, despite buffer flush after every `NET UP`.
-
-* Initial heap: `350868`
-* Heap during 1-st net down: `342868`
-* Heap after 1-st net up: `342612`
-* Heap during 2-nd net down: `334612`
-* Heap after 2-nd net up: `334612`
-* Heap during 3-rd net down: `326612`
-* Heap after 3-rd net up: `326612`
-
-#### Evidence
-
-[iot_network_log_bug_04.txt](../network-stress/iot_network_log_bug_04.txt)
+**Argumentation:** The firmware violates critical reliability requirements, exhibiting unhandled buffer overflows causing reboots (UART CLI), permanent bus lockups on I2C NACK errors, state leakage on resets (PWM remaining at 255), failure of offline buffer capacity limits (`DROP_OLDEST`), message duplication upon reconnection, and irreversible heap memory leaks during stress. Deployment without remediation presents severe stability risks.

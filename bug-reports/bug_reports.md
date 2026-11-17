@@ -11,11 +11,11 @@ This document contains a summary of identified defects across testing cycles, al
 
 ### Summary Bug Log
 
-| Bug ID    | Title                                                                            | Requirement | Severity     | Reproducibility | Evidence                                 |
-| --------- | -------------------------------------------------------------------------------- | ----------- | ------------ | --------------- | ---------------------------------------- |
-| **BUG01** | Open LED remains ON after STOP button is pressed                                 | R14         | Medium       | 5/5             | `evidence/smart_gate_project_bug_01.png` |
-| **BUG02** | System does not transition to ERROR state after 10-second timeout during OPENING | R9          | High         | 5/5             | N/A                                      |
-| **BUG03** | Direct reversal between OPENING and CLOSING states allowed without STOP          | N/A         | **Critical** | 5/5             | `evidence/smart_gate_project_bug_03.png` |
+| Bug ID    | Title                                                                            | Requirement | Severity     | Reproducibility | Evidence                                                                                                                                         |
+| --------- | -------------------------------------------------------------------------------- | ----------- | ------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **BUG01** | Open LED remains ON after STOP button is pressed                                 | R14         | Medium       | 5/5             | [smart_gate_project_bug_01.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/smart_gate_project_bug_01.png) |
+| **BUG02** | System does not transition to ERROR state after 10-second timeout during OPENING | R9          | High         | 5/5             | N/A                                                                                                                                              |
+| **BUG03** | Direct reversal between OPENING and CLOSING states allowed without STOP          | N/A         | **Critical** | 5/5             | [smart_gate_project_bug_03.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/smart_gate_project_bug_03.png) |
 
 ### Detailed Bug Report (Critical)
 
@@ -50,7 +50,7 @@ This document contains a summary of identified defects across testing cycles, al
 
 #### Evidence
 
-`evidence/smart_gate_project_bug_03.png`
+[smart_gate_project_bug_03.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/smart_gate_project_bug_03.png)
 
 ---
 
@@ -63,10 +63,10 @@ This document contains a summary of identified defects across testing cycles, al
 
 ### Summary Bug Log
 
-| Bug ID     | Title                                                                        | Requirement | Severity     | Reproducibility | Evidence                       |
-| ---------- | ---------------------------------------------------------------------------- | ----------- | ------------ | --------------- | ------------------------------ |
-| **BUG_01** | Short noise pulse triggers false logical event and action                    | R1          | High         | 5/5             | `evidence/debounce_bug_01.png` |
-| **BUG_02** | Noise during critical operation causes many false logical events and actions | R1          | **Critical** | 5/5             | `evidence/debounce_bug_02.jpg` |
+| Bug ID     | Title                                                                        | Requirement | Severity     | Reproducibility | Evidence                                                                                                                     |
+| ---------- | ---------------------------------------------------------------------------- | ----------- | ------------ | --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **BUG_01** | Short noise pulse triggers false logical event and action                    | R1          | High         | 5/5             | [debounce_bug_01.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/debounce_bug_01.png) |
+| **BUG_02** | Noise during critical operation causes many false logical events and actions | R1          | **Critical** | 5/5             | [debounce_bug_02.jpg](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/debounce_bug_02.jpg) |
 
 ### Detailed Bug Report (Critical)
 
@@ -98,7 +98,7 @@ Noise during critical operation causes many false logical events and actions
 
 #### Evidence
 
-`evidence/debounce_bug_02.jpg`
+[debounce_bug_02.jpg](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/debounce_bug_02.jpg)
 
 ---
 
@@ -112,13 +112,13 @@ Noise during critical operation causes many false logical events and actions
 
 ### Summary Bug Log
 
-| Bug ID     | Title                                                                                                           | Requirement | Severity     | Reproducibility | Evidence                       |
-| ---------- | --------------------------------------------------------------------------------------------------------------- | ----------- | ------------ | --------------- | ------------------------------ |
-| **BUG-01** | No error displayed when speed limit is exceeded                                                                 | R3          | Mid          | 10/10           | `evidence/uart_cli_bug_01.png` |
-| **BUG-02** | No error displayed when timeout limit is exceeded                                                               | R5          | Medium       | 10/10           | `evidence/uart_cli_bug_02.png` |
-| **BUG-03** | Special characters are accepted with OK instead of unknown command error                                        | R7          | Low          | 10/10           | `evidence/uart_cli_bug_03.png` |
-| **BUG-04** | System executes command exceeding max length when padded with trailing spaces instead of returning length error | R10         | Low          | 10/10           | `evidence/uart_cli_bug_04.png` |
-| **BUG-05** | System is crashing with fault on buffer overflow when processing long input strings                             | R11         | **Critical** | 10/10           | N/A                            |
+| Bug ID     | Title                                                                                                           | Requirement | Severity     | Reproducibility | Evidence                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------- | ----------- | ------------ | --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **BUG-01** | No error displayed when speed limit is exceeded                                                                 | R3          | Mid          | 10/10           | [uart_cli_bug_01.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/uart_cli_bug_01.png) |
+| **BUG-02** | No error displayed when timeout limit is exceeded                                                               | R5          | Medium       | 10/10           | [uart_cli_bug_02.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/uart_cli_bug_02.png) |
+| **BUG-03** | Special characters are accepted with OK instead of unknown command error                                        | R7          | Low          | 10/10           | [uart_cli_bug_03.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/uart_cli_bug_03.png) |
+| **BUG-04** | System executes command exceeding max length when padded with trailing spaces instead of returning length error | R10         | Low          | 10/10           | [uart_cli_bug_04.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/uart_cli_bug_04.png) |
+| **BUG-05** | System is crashing with fault on buffer overflow when processing long input strings                             | R11         | **Critical** | 10/10           | N/A                                                                                                                          |
 
 ### Detailed Bug Report (Critical)
 
@@ -166,10 +166,10 @@ N/A
 
 ### Summary Bug Log
 
-| Bug ID     | Title                                  | Requirement | Severity    | Reproducibility | Evidence                                                                   |
-| ---------- | -------------------------------------- | ----------- | ----------- | --------------- | -------------------------------------------------------------------------- |
-| **BUG-01** | Firmware freezes upon NACK, no retry   | N/A         | **Highest** | 10/10           | `evidence/i2c_bug.png`, `evidence/i2c_trace.vcd`, `evidence/i2c_bug_2.png` |
-| **BUG-02** | Firmware won’t recover after FAULT OFF | N/A         | **Highest** | 10/10           | `evidence/i2c_bug.png`, `evidence/i2c_trace.vcd`, `evidence/i2c_bug_2.png` |
+| Bug ID     | Title                                  | Requirement | Severity    | Reproducibility | Evidence                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | -------------------------------------- | ----------- | ----------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **BUG-01** | Firmware freezes upon NACK, no retry   | N/A         | **Highest** | 10/10           | [i2c_bug.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_bug.png), [i2c_trace.vcd](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_trace.vcd), [i2c_bug_2.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_bug_2.png) |
+| **BUG-02** | Firmware won’t recover after FAULT OFF | N/A         | **Highest** | 10/10           | [i2c_bug.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_bug.png), [i2c_trace.vcd](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_trace.vcd), [i2c_bug_2.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_bug_2.png) |
 
 ### Detailed Bug Reports (Critical)
 
@@ -199,8 +199,8 @@ System froze with `[  5519][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop 
 
 #### Evidence
 
-* **Trace Evidence:** `evidence/i2c_bug.png`, `evidence/i2c_trace.vcd`
-* **Firmware Log Evidence:** `evidence/i2c_bug_2.png`
+* **Trace Evidence:** [i2c_bug.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_bug.png), [i2c_trace.vcd](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_trace.vcd)
+* **Firmware Log Evidence:** [i2c_bug_2.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_bug_2.png)
 
 #### BUG-02: Firmware won’t recover after FAULT OFF
 
@@ -230,8 +230,8 @@ System provides no recovery path after FAULT ON followed by FAULT OFF
 
 #### Evidence
 
-* **Trace Evidence:** `evidence/i2c_bug.png`, `evidence/i2c_trace.vcd`
-* **Firmware Log Evidence:** `evidence/i2c_bug_2.png`
+* **Trace Evidence:** [i2c_bug.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_bug.png), [i2c_trace.vcd](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_trace.vcd)
+* **Firmware Log Evidence:** [i2c_bug_2.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/i2c_bug_2.png)
 
 ---
 
@@ -249,12 +249,12 @@ System provides no recovery path after FAULT ON followed by FAULT OFF
 
 ### Summary Bug Log
 
-| Bug ID     | Title                                                          | Requirement           | Severity     | Reproducibility | Evidence                           |
-| ---------- | -------------------------------------------------------------- | --------------------- | ------------ | --------------- | ---------------------------------- |
-| **Bug-01** | Single button press triggers multiple actions                  | Button R3             | Medium       | 3/5             | `evidence/recovery_bug_01.mp4`     |
-| **Bug-02** | Actuator remains ON after WDT reboot                           | R5 watchdog           | **Critical** | 10/10           | `evidence/recovery_bug_02.mp4`     |
-| **bug-03** | Device wakes up instantly from deep sleep ignoring sleep timer | R4 — Sleep / Wake     | High         | 10/10           | `evidence/recovery_bug_03.mp4`     |
-| **bug-04** | Incorrect counter displayed during powerloss                   | R6 — Interrupted save | High         | 10/10           | `evidence/recovery_bug_04.mp4.png` |
+| Bug ID     | Title                                                          | Requirement           | Severity     | Reproducibility | Evidence                                                                                                                             |
+| ---------- | -------------------------------------------------------------- | --------------------- | ------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Bug-01** | Single button press triggers multiple actions                  | Button R3             | Medium       | 3/5             | [recovery_bug_01.mp4](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/recovery_bug_01.mp4)         |
+| **Bug-02** | Actuator remains ON after WDT reboot                           | R5 watchdog           | **Critical** | 10/10           | [recovery_bug_02.mp4](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/recovery_bug_02.mp4)         |
+| **bug-03** | Device wakes up instantly from deep sleep ignoring sleep timer | R4 — Sleep / Wake     | High         | 10/10           | [recovery_bug_03.mp4](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/recovery_bug_03.mp4)         |
+| **bug-04** | Incorrect counter displayed during powerloss                   | R6 — Interrupted save | High         | 10/10           | [recovery_bug_04.mp4.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/recovery_bug_04.mp4.png) |
 
 ### Detailed Bug Report (Critical)
 
@@ -289,7 +289,7 @@ Actuator remains ON after WDT reboot
 
 #### Evidence
 
-`evidence/recovery_bug_02.mp4`
+[recovery_bug_02.mp4](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/recovery_bug_02.mp4)
 
 ---
 
@@ -303,12 +303,12 @@ Actuator remains ON after WDT reboot
 
 ### Summary Bug Log
 
-| Bug ID     | Title                                                                                 | Category                 | Severity     | Reproducibility | Evidence                     |
-| ---------- | ------------------------------------------------------------------------------------- | ------------------------ | ------------ | --------------- | ---------------------------- |
-| **BUG-01** | PWM upper boundary value `100` rejected with `ERROR` instead of `OK`                  | Firmware / Requirement   | Medium       | 5/5             | `evidence/python_bug_01.png` |
-| **BUG-02** | State leakage on `RESET`: PWM remains at `255` instead of resetting to safe state `0` | Firmware Defect          | **Critical** | 5/5             | `evidence/python_bug_02.png` |
-| **BUG-03** | Temperature response JSON truncated mid-stream causing `JSONDecodeError`              | Communication / Firmware | **Critical** | 5/5             | `evidence/python_bug_03.png` |
-| **BUG-04** | Device fails to respond to `PING` command causing `TimeoutError`                      | Requirement / Firmware   | Medium       | 5/5             | `evidence/python_bug_04.png` |
+| Bug ID     | Title                                                                                 | Category                 | Severity     | Reproducibility | Evidence                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------- | ------------------------ | ------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **BUG-01** | PWM upper boundary value `100` rejected with `ERROR` instead of `OK`                  | Firmware / Requirement   | Medium       | 5/5             | [python_bug_01.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/python_bug_01.png) |
+| **BUG-02** | State leakage on `RESET`: PWM remains at `255` instead of resetting to safe state `0` | Firmware Defect          | **Critical** | 5/5             | [python_bug_02.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/python_bug_02.png) |
+| **BUG-03** | Temperature response JSON truncated mid-stream causing `JSONDecodeError`              | Communication / Firmware | **Critical** | 5/5             | [python_bug_03.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/python_bug_03.png) |
+| **BUG-04** | Device fails to respond to `PING` command causing `TimeoutError`                      | Requirement / Firmware   | Medium       | 5/5             | [python_bug_04.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/python_bug_04.png) |
 
 ### Detailed Bug Reports (Critical)
 
@@ -342,7 +342,7 @@ The PWM subsystem retains an active value of `255` (`AssertionError: assert 255 
 
 #### Evidence
 
-`evidence/python_bug_02.png`
+[python_bug_02.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/python_bug_02.png)
 
 #### BUG-03: Temperature response JSON truncated mid-stream causing `JSONDecodeError`
 
@@ -373,7 +373,7 @@ The string is cut off before the closing brace (`'{"status":"OK","temperature":2
 
 #### Evidence
 
-`evidence/python_bug_03.png`
+[python_bug_03.png](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/bug-reports/evidence/python_bug_03.png)
 
 ---
 
@@ -386,12 +386,12 @@ The string is cut off before the closing brace (`'{"status":"OK","temperature":2
 
 ### Summary Bug Log
 
-| Bug ID | Title                                                                          | Requirement | Severity | Reproducibility | Evidence                                                            |
-| ------ | ------------------------------------------------------------------------------ | ----------- | -------- | --------------- | ------------------------------------------------------------------- |
-| **01** | Reconnect Storm & Immediate Retry Burst Failure                                | R2          | Critical | 5/5             | `embedded-qa-portfolio/network-stress/iot_network_log_bug_01.txt`   |
-| **02** | Offline Buffer Capacity Boundary Bypass & Element Drop Failure                 | R4          | Critical | 5/5             | `embedded-qa-portfolio/network-stress/iot_network_log_bug_02_2.txt` |
-| **03** | Message Duplication During Buffer Flush Upon Network Reconnection              | R6          | High     | 5/5             | `embedded-qa-portfolio/network-stress/iot_network_log_bug_03_2.txt` |
-| **04** | Dynamic Memory Leak and Heap Degradation Under Stress During Connection Outage | R7          | High     | 5/5             | `embedded-qa-portfolio/network-stress/iot_network_log_bug_04_2.txt` |
+| Bug ID | Title                                                                          | Requirement | Severity | Reproducibility | Evidence                                                                                                                                 |
+| ------ | ------------------------------------------------------------------------------ | ----------- | -------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **01** | Reconnect Storm & Immediate Retry Burst Failure                                | R2          | Critical | 5/5             | [iot_network_log_bug_01.txt](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress/iot_network_log_bug_01.txt)     |
+| **02** | Offline Buffer Capacity Boundary Bypass & Element Drop Failure                 | R4          | Critical | 5/5             | [iot_network_log_bug_02_2.txt](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress/iot_network_log_bug_02_2.txt) |
+| **03** | Message Duplication During Buffer Flush Upon Network Reconnection              | R6          | High     | 5/5             | [iot_network_log_bug_03_2.txt](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress/iot_network_log_bug_03_2.txt) |
+| **04** | Dynamic Memory Leak and Heap Degradation Under Stress During Connection Outage | R7          | High     | 5/5             | [iot_network_log_bug_04_2.txt](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress/iot_network_log_bug_04_2.txt) |
 
 ### Detailed Bug Reports (Critical & High)
 
@@ -422,7 +422,7 @@ System should use an exponential backoff algorithm to prevent broker flooding.
 
 #### Evidence
 
-`embedded-qa-portfolio/network-stress/iot_network_log_bug_01.txt`
+[iot_network_log_bug_01.txt](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress/iot_network_log_bug_01.txt)
 
 ---
 
@@ -454,7 +454,7 @@ Buffer count exceeds max capacity (`buffer: 10`, `capacity: 8`) while dropped re
 
 #### Evidence
 
-`embedded-qa-portfolio/network-stress/iot_network_log_bug_02_2.txt`
+[iot_network_log_bug_02_2.txt](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress/iot_network_log_bug_02_2.txt)
 
 ---
 
@@ -485,7 +485,7 @@ Each message ID is published twice (duplicated IDs: `id-1`, `id-2`, `id-3`, `id-
 
 #### Evidence
 
-`embedded-qa-portfolio/network-stress/iot_network_log_bug_03_2.txt`
+[iot_network_log_bug_03_2.txt](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress/iot_network_log_bug_03_2.txt)
 
 ---
 
@@ -527,4 +527,4 @@ Free heap drops irreversibly, despite buffer flush after every `NET UP`.
 
 #### Evidence
 
-`embedded-qa-portfolio/network-stress/iot_network_log_bug_04_2.txt`
+[iot_network_log_bug_04_2.txt](https://github.com/ramenw420/embedded-qa-portfolio/tree/main/network-stress/iot_network_log_bug_04_2.txt)
