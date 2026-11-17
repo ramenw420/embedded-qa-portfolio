@@ -1,0 +1,267 @@
+[BUFFER] overflow policy=DROP_OLDEST dropped_total=0
+[BUFFER] queued id=409 count=9/8
+[BUFFER] queued id=410 count=10/8
+[BUFFER] queued id=411 count=11/8
+[BUFFER] queued id=412 count=12/8
+[BUFFER] queued id=413 count=13/8
+[BUFFER] queued id=414 count=14/8
+[BUFFER] queued id=415 count=15/8
+[BUFFER] queued id=416 count=16/8
+[BUFFER] queued id=417 count=17/8
+[BUFFER] queued id=418 count=18/8
+[BUFFER] queued id=419 count=19/8
+[BUFFER] queued id=420 count=20/8
+[BUFFER] queued id=421 count=21/8
+[BUFFER] queued id=422 count=22/8
+[BUFFER] queued id=423 count=23/8
+[BUFFER] queued id=424 count=24/8
+[BUFFER] queued id=425 count=25/8
+[BUFFER] queued id=426 count=26/8
+[BUFFER] queued id=427 count=27/8
+[BUFFER] queued id=428 count=28/8
+[BUFFER] queued id=429 count=29/8
+[BUFFER] queued id=430 count=30/8
+[BUFFER] queued id=431 count=31/8
+[BUFFER] queued id=432 count=32/8
+[BUFFER] queued id=433 count=33/8
+[BUFFER] queued id=434 count=34/8
+[BUFFER] queued id=435 count=35/8
+[BUFFER] queued id=436 count=36/8
+[BUFFER] queued id=437 count=37/8
+[BUFFER] queued id=438 count=38/8
+[BUFFER] queued id=439 count=39/8
+[BUFFER] queued id=440 count=40/8
+[BUFFER] queued id=441 count=41/8
+[BUFFER] queued id=442 count=42/8
+[BUFFER] queued id=443 count=43/8
+[BUFFER] queued id=444 count=44/8
+[BUFFER] queued id=445 count=45/8
+[BUFFER] queued id=446 count=46/8
+[BUFFER] queued id=447 count=47/8
+[BUFFER] queued id=448 count=48/8
+[BUFFER] queued id=449 count=49/8
+[BUFFER] queued id=450 count=50/8
+[BUFFER] queued id=451 count=51/8
+[BUFFER] queued id=452 count=52/8
+[BUFFER] queued id=453 count=53/8
+[BUFFER] queued id=454 count=54/8
+[BUFFER] queued id=455 count=55/8
+[BUFFER] queued id=456 count=56/8
+[BUFFER] queued id=457 count=57/8
+[BUFFER] queued id=458 count=58/8
+[BUFFER] queued id=459 count=59/8
+[BUFFER] queued id=460 count=60/8
+[BUFFER] queued id=461 count=61/8
+[BUFFER] queued id=462 count=62/8
+[BUFFER] queued id=463 count=63/8
+[BUFFER] queued id=464 count=64/8
+[BUFFER] queued id=465 count=65/8
+[BUFFER] queued id=466 count=66/8
+[BUFFER] queued id=467 count=67/8
+[BUFFER] queued id=468 count=68/8
+[BUFFER] queued id=469 count=69/8
+[BUFFER] queued id=470 count=70/8
+[BUFFER] queued id=471 count=71/8
+[BUFFER] queued id=472 count=72/8
+[BUFFER] queued id=473 count=73/8
+[BUFFER] queued id=474 count=74/8
+[BUFFER] queued id=475 count=75/8
+[BUFFER] queued id=476 count=76/8
+[BUFFER] queued id=477 count=77/8
+[BUFFER] queued id=478 count=78/8
+[BUFFER] queued id=479 count=79/8
+[BUFFER] queued id=480 count=80/8
+[BUFFER] queued id=481 count=81/8
+[BUFFER] queued id=482 count=82/8
+[BUFFER] queued id=483 count=83/8
+[BUFFER] queued id=484 count=84/8
+[BUFFER] queued id=485 count=85/8
+[BUFFER] queued id=486 count=86/8
+[BUFFER] queued id=487 count=87/8
+[BUFFER] queued id=488 count=88/8
+[BUFFER] queued id=489 count=89/8
+[BUFFER] queued id=490 count=90/8
+[BUFFER] queued id=491 count=91/8
+[BUFFER] queued id=492 count=92/8
+[BUFFER] queued id=493 count=93/8
+[BUFFER] queued id=494 count=94/8
+[BUFFER] queued id=495 count=95/8
+[BUFFER] queued id=496 count=96/8
+[BUFFER] queued id=497 count=97/8
+[BUFFER] queued id=498 count=98/8
+[BUFFER] queued id=499 count=99/8
+[BUFFER] queued id=500 count=100/8
+[STRESS] end heap=310600
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=131 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=132 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=133 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=134 backoff_ms=50
+{"net":"BACKOFF","broker":false,"buffer":100,"capacity":8,"sent":800,"dropped":0,"duplicates":400,"reconnect_attempts":134,"heap":310600}
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=135 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=136 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=137 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=138 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=139 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=140 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=141 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=142 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=143 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=144 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=145 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=146 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=147 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=148 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=149 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=150 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=151 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=152 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=153 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=154 backoff_ms=50
+[NET] state=CONNECTING
+[NET] reconnect=FAILED
+[NET] state=BACKOFF
+[NET] retry=155 backoff_ms=50
+[FAULT] network restored
+[NET] state=CONNECTING
+[NET] state=CONNECTED
+[NET] reconnect=SUCCESS
+[BUFFER] flush_start count=100
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=498 temp=24.5
+[MQTT] publish id=498 temp=24.5
+[MQTT] publish id=499 temp=24.5
+[MQTT] publish id=499 temp=24.5
+[MQTT] publish id=500 temp=24.5
+[MQTT] publish id=500 temp=24.5
+[MQTT] publish id=493 temp=24.5
+[MQTT] publish id=493 temp=24.5
+[MQTT] publish id=494 temp=24.5
+[MQTT] publish id=494 temp=24.5
+[MQTT] publish id=495 temp=24.5
+[MQTT] publish id=495 temp=24.5
+[MQTT] publish id=496 temp=24.5
+[MQTT] publish id=496 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=498 temp=24.5
+[MQTT] publish id=498 temp=24.5
+[MQTT] publish id=499 temp=24.5
+[MQTT] publish id=499 temp=24.5
+[MQTT] publish id=500 temp=24.5
+[MQTT] publish id=500 temp=24.5
+[MQTT] publish id=493 temp=24.5
+[MQTT] publish id=493 temp=24.5
+[MQTT] publish id=494 temp=24.5
+[MQTT] publish id=494 temp=24.5
+[MQTT] publish id=495 temp=24.5
+[MQTT] publish id=495 temp=24.5
+[MQTT] publish id=496 temp=24.5
+[MQTT] publish id=496 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=498 temp=24.5
+[MQTT] publish id=498 temp=24.5
+[MQTT] publish id=499 temp=24.5
+[MQTT] publish id=499 temp=24.5
+[MQTT] publish id=500 temp=24.5
+[MQTT] publish id=500 temp=24.5
+[MQTT] publish id=493 temp=24.5
+[MQTT] publish id=493 temp=24.5
+[MQTT] publish id=494 temp=24.5
+[MQTT] publish id=494 temp=24.5
+[MQTT] publish id=495 temp=24.5
+[MQTT] publish id=495 temp=24.5
+[MQTT] publish id=496 temp=24.5
+[MQTT] publish id=496 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=498 temp=24.5
+[MQTT] publish id=498 temp=24.5
+[MQTT] publish id=499 temp=24.5
+[MQTT] publish id=499 temp=24.5
+[MQTT] publish id=500 temp=24.5
+[MQTT] publish id=500 temp=24.5
+[MQTT] publish id=493 temp=24.5
+[MQTT] publish id=493 temp=24.5
+[MQTT] publish id=494 temp=24.5
+[MQTT] publish id=494 temp=24.5
+[MQTT] publish id=495 temp=24.5
+[MQTT] publish id=495 temp=24.5
+[MQTT] publish id=496 temp=24.5
+[MQTT] publish id=496 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish id=497 temp=24.5
+[MQTT] publish
